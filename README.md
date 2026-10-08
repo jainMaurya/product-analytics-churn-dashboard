@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-live-blueviolet?logo=streamlit)](https://olist-analytics.streamlit.app/)
 
-[Live Demo](https://analyticscopilot.streamlit.app/) | [GitHub Repository](https://github.com/jainMaurya/product-analytics-churn-dashboard)
+[Live Demo](https://appuct-analytics-churn-dashboard-pigez6hwv5rgdsdy4qkcnc.streamlit.app/) | [GitHub Repository](https://github.com/jainMaurya/product-analytics-churn-dashboard)
 
 ---
 
