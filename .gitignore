@@ -1,0 +1,39 @@
+# Database
+*.db
+*.sqlite
+
+# Raw data (download locally via database.py)
+data/raw/
+data/processed/
+
+# ML artefacts — model weights are small enough to commit
+# model/*.pkl is tracked (728 KB)
+models/
+
+# Generated data
+# customer_features.parquet is tracked (4.4 MB — needed for Streamlit Cloud)
+data/customer_features.csv
+
+# Secrets — never commit these
+.env
+.streamlit/secrets.toml
+
+# Generated plots (large HTML)
+assets/*.html
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
