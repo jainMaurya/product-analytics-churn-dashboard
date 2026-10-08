@@ -13,7 +13,19 @@ import os
 
 import streamlit as st
 
-_MODEL = "llama-3.3-70b-versatile"
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
+_MODELS = [
+    "qwen/qwen3.8-27b",
+    "llama-3.3-70b-versatile",
+    "llama-3.1-70b-versatile",
+    "llama3-70b-8192",
+    "openai/gpt-oss-120b",
+]
 
 
 # ── API key helper ─────────────────────────────────────────────────────────────
@@ -25,7 +37,13 @@ def get_api_key() -> str:
             return key
     except Exception:
         pass
-    return os.environ.get("GROQ_API_KEY", "")
+    key = os.environ.get("GROQ_API_KEY", "")
+    if key:
+        return key
+    google_key = os.environ.get("GOOGLE_API_KEY", "")
+    if google_key and google_key.startswith("gsk_"):
+        return google_key
+    return ""
 
 
 def api_key_configured() -> bool:
@@ -35,7 +53,7 @@ def api_key_configured() -> bool:
 # ── Core Groq call ─────────────────────────────────────────────────────────────
 
 def ask_gemini(prompt: str) -> str:
-    """Send a prompt to Groq LLaMA 3.3-70B. Returns response text or error string."""
+    """Send a prompt to Groq. Returns response text or error string."""
     api_key = get_api_key()
     if not api_key:
         return (
@@ -45,14 +63,24 @@ def ask_gemini(prompt: str) -> str:
         )
     try:
         from groq import Groq  # noqa: PLC0415
-        client   = Groq(api_key=api_key)
-        response = client.chat.completions.create(
-            model=_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=1500,
-            temperature=0.4,
-        )
-        return response.choices[0].message.content
+        client = Groq(api_key=api_key)
+        
+        # Try preferred models in order
+        last_err = None
+        for model in _MODELS:
+            try:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_tokens=1500,
+                    temperature=0.4,
+                )
+                return response.choices[0].message.content
+            except Exception as err:
+                last_err = err
+                continue
+        
+        return f"⚠️  AI error: {last_err}"
     except Exception as exc:
         return f"⚠️  AI error: {exc}"
 
