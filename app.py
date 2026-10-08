@@ -93,8 +93,11 @@ def _apply_filters(df, f):
 
 # ── Data paths ────────────────────────────────────────────────────────────────
 
-DB_PATH       = Path("data/olist.db")
-FEATURES_PATH = Path("data/customer_features.parquet")
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+
+DB_PATH       = DATA_DIR / "olist.db"
+FEATURES_PATH = DATA_DIR / "customer_features.parquet"
 
 # GitHub Releases URL for the large SQLite database (112 MB)
 # Hosted in: https://github.com/raghavPahwa27/Product-Analytics-Dashboard/releases/tag/v1.0
@@ -111,7 +114,7 @@ def _download_db() -> None:
     """
     import urllib.request  # noqa: PLC0415
 
-    os.makedirs("data", exist_ok=True)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     st.info(
         "📥 First-time setup: downloading the Olist database from GitHub Releases "
         "(~112 MB). This takes 20–40 seconds and only happens once."
@@ -141,7 +144,7 @@ def _download_db() -> None:
                             text=f"Downloading… {mb_done:.1f} / {mb_total:.1f} MB"
                         )
 
-        tmp_path.rename(DB_PATH)
+        tmp_path.replace(DB_PATH)
         progress_bar.progress(1.0, text="Download complete ✅")
         time.sleep(0.8)
         st.rerun()
